@@ -90,6 +90,7 @@ const Member = () => {
     bankname: "",
     paymode: "",
   });
+  const [promoters, setPromoters] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +106,8 @@ const Member = () => {
           ...prevData,
           membershipNumber: membershipNumber + 1,
         }));
-        setCash
+        const promoters = await axios.get("/api/promoter/getPromoters");
+        setPromoters(promoters.data);
       } catch (error) {
         console.log(error);
       }
@@ -1286,7 +1288,7 @@ const Member = () => {
                   <label className="font-bold text-lg text-gray-700">
                     Promoter <span className="text-red-600">*</span>{" "}
                   </label>
-                  <input
+                  <select
                     //onBlur={(e) => handleError(e)}
                     onChange={handlePayChange}
                     type="text"
@@ -1295,7 +1297,14 @@ const Member = () => {
                     value={payment.promoter}
                     placeholder="Enter Promoter Name"
                     className="rounded-md border border-black px-2 h-10  bg-slate-300 w-full text-gray-700 cursor-pointer font-semibold"
-                  />
+                  >
+                    <option value="">Select a Name</option>
+                    {promoters.map((name) => (
+                      <option key={name._id} value={name._id}>
+                        {`${name.firstName} ${name.lastName}`}
+                      </option>
+                    ))}
+                  </select>
                   {/* <span className="error">{getError.dist}</span> */}
                 </div>
               </div>

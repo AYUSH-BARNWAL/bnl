@@ -64,7 +64,7 @@ const Promoter = () => {
       axios.post("/api/promoter/addPromoter", proFormData).then(async () => {
         const sentData = await axios.post(
           "/api/chequeOrOnline/addPromoterAmount",
-          proFormData
+          proFormData,
         );
         console.log(sentData.data.newChequeOnline);
         toast.success("Account Created Successfully");
@@ -240,7 +240,7 @@ const Promoter = () => {
     const accountNumber = event.target.value;
     setSelectedAccountNumber(accountNumber);
     proFormData.bankAccountNumber = accountNumber;
-    setLoading
+    setLoading(true);
     await axios
       .post("/api/chequeOrOnline/getBankBalance", {
         bankAccountNumber: accountNumber,
@@ -252,6 +252,7 @@ const Promoter = () => {
           ...prevData,
           balance: oldBalance,
         }));
+        setLoading(false);
       })
       .catch((error) => {
         toast.error(error.response.data.error);
@@ -263,15 +264,15 @@ const Promoter = () => {
   };
 
   const uniqueBankNames = Array.from(
-    new Set(banks.map((item) => item.bankname))
+    new Set(banks.map((item) => item.bankname)),
   );
 
   const uniqueIFSCCodes = Array.from(
     new Set(
       banks
         .filter((item) => item.bankname === selectedBank)
-        .map((item) => item.ifsc)
-    )
+        .map((item) => item.ifsc),
+    ),
   );
 
   return (
@@ -898,7 +899,7 @@ const Promoter = () => {
                           .filter(
                             (item) =>
                               item.bankname === selectedBank &&
-                              item.ifsc === selectedIFSC
+                              item.ifsc === selectedIFSC,
                           )
                           .map((item) => (
                             <option

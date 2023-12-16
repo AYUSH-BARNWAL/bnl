@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Codeforces - Codeforces Round 218 Div 2/C. Hamburgers/C_Hamburgers.iml" filepath="$PROJECT_DIR$/Codeforces - Codeforces Round 218 Div 2/C. Hamburgers/C_Hamburgers.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/bnl.iml" filepath="$PROJECT_DIR$/.idea/bnl.iml" />
     </modules>
   </component>
