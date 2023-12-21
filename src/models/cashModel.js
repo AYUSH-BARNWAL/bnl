@@ -51,6 +51,6 @@ const cashModel = new mongoose.Schema({
   // },
 });
 
-cashModel.plugin(AutoIncrement, { inc_field: "cashId" });
-const cash = mongoose.model("cash", cashModel);
-module.exports = cash;
+// cashModel.plugin(AutoIncrement, { inc_field: "cashId" });
+const cash = mongoose.models.cash || mongoose.model("cash", cashModel);
+export default cash;

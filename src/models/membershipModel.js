@@ -8,10 +8,6 @@ const membershipSchema = new mongoose.Schema({
   membershipCharge: {
     type: Number,
   },
-  // balance: {
-  //   type: Number,
-  //   default: 0,
-  // },
   membershipNumber: {
     type: Number,
   },

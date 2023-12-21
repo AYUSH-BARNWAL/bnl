@@ -16,7 +16,6 @@ const Member = () => {
   const [loading, setLoading] = useState(false);
   const [getError, setError] = useState({});
   const [banks, setBanks] = useState([]);
-  const [membershipNumber, setMembershipNumber] = useState("");
   const [formData, setFormData] = useState({
     membershipNumber: "",
     title: "",
@@ -40,7 +39,7 @@ const Member = () => {
     post: "",
     dist: "",
     state: "",
-    pin: "",
+    pincode: "",
 
     name1: "",
     aadhar1: "",
@@ -81,14 +80,11 @@ const Member = () => {
     total: "",
   });
   const [cash, setCash] = useState({
-    accountnumber: "",
     amount: "",
     transactiondate: Date.now(),
     shareamount: null,
     membershipamount: "",
     membershipNumber: "",
-    bankname: "",
-    paymode: "",
   });
   const [promoters, setPromoters] = useState([]);
 
@@ -274,10 +270,30 @@ const Member = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
+      cash.membershipNumber = formData.membershipNumber;
+      cash.amount = payment.amount;
+      cash.membershipamount = payment.membershipCharge;
+      cash.shareamount = payment.sharePurchaseAmount;
+      console.log(formData);
+      console.log(getpaymode);
+      console.log(cash);
+      console.log(payment);
+      await axios.post("/api/member/createMember", formData).then(async () => {
+        if (getpaymode.paymode === "cash") {
+          try {
+            await axios.post("/api/cash/addNewMemberCash", cash);
+          } catch (err) {
+            console.log(err);
+          }
+        } else {
+          await axios.post("/api/chequeOrOnline/addNewMemberCheque", payment);
+        }
+      });
       toast.success("Account Created Successfully");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 3000);
     } catch (err) {
       console.log(err.message);
     } finally {
@@ -338,29 +354,6 @@ const Member = () => {
     setCash((prevData) => ({ ...prevData, [name]: value }));
     if (name === "paymode") setpaymode({ paymode: value });
   };
-  // useEffect(() => {
-  //   console.log(payment);
-  // }, [payment]);
-  // useEffect(() => {
-  //   console.log(formData);
-  // }, [formData]);
-  // useEffect(() => {
-  //   console.log(getpaymode);
-  // }, [getpaymode]);
-  // useEffect(() => {
-  //   console.log(cash);
-  // }, [cash]);
-
-  //   useEffect(() => {
-  //     async function fetchData() {
-  //       const memNo = await getmembershipNo();
-  //       if (memNo) setMembershipNumber(memNo.membershipNumber);
-  //       else setMembershipNumber(0);
-  //       console.log(membershipNumber);
-  //     }
-
-  //     fetchData();
-  //   }, []);
 
   const Line = () => {
     return <div className="w-11/12 mx-auto h-[1.5px] my-10 bg-gray-400" />;

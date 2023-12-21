@@ -15,10 +15,7 @@ export async function GET(req) {
         { status: 200 }
       );
     } else {
-      return NextResponse.json(
-        { message: "No membership records found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ membershipNumber: 0 }, { status: 200 });
     }
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 500 });

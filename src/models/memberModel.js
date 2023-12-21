@@ -23,7 +23,7 @@ const memberSchema = new mongoose.Schema({
   post: String,
   dist: String,
   state: String,
-  pin: String,
+  pincode: String,
   name1: String,
   aadhar1: String,
   email1: String,
