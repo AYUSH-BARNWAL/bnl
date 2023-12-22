@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Navbar from "../../components/navbar";
 import axios from "axios";
-import "../signup/loader.css";
+import "./loader.css";
 const Promoter = () => {
   const [banks, setBanks] = useState([]);
   const [selectedBank, setSelectedBank] = useState("");
@@ -43,6 +43,19 @@ const Promoter = () => {
     bankAccountNumber: "",
     ifsc: "",
   });
+  const [share, setShare] = useState({
+    promoterName: "",
+    sharesLeft: 0,
+    transactionDate: "",
+    membershipNumber: 0,
+    sharesSold: 0,
+    transactionID: "",
+  })
+  function generateTimestampOrderedStrings(prefix) {
+    const timestamp = Date.now();
+    const formattedTimestamp = prefix + timestamp.toString().slice(0, 10);
+    return formattedTimestamp;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +71,7 @@ const Promoter = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const timestampString = generateTimestampOrderedStrings("TRN-PROMOTER-");
     try {
       setLoading(true);
       console.log(proFormData);
@@ -65,8 +79,15 @@ const Promoter = () => {
         const sentData = await axios.post(
           "/api/chequeOrOnline/addPromoterAmount",
           proFormData,
-        );
-        console.log(sentData.data.newChequeOnline);
+        ).then(async () => {
+          share.transactionID = timestampString;
+          share.promoterName = proFormData.firstName + " " + proFormData.lastName;
+          share.membershipNumber = proFormData.membershipNumber;
+          share.sharesLeft = proFormData.shareNominalHold;
+          share.transactionDate = proFormData.allotmentDate.toString();
+          await axios.post("/api/promoter/addPromoterShares", share);
+        });
+        // console.log(sentData.data.newChequeOnline);
         toast.success("Account Created Successfully");
         setTimeout(() => {
           window.location.reload();
@@ -313,7 +334,7 @@ const Promoter = () => {
                         type="text"
                         name="firstName"
                         required
-                        // pattern="[a-zA-Z]{2}"
+                      // pattern="[a-zA-Z]{2}"
                       />
                       <span className="error">{getError.firstName}</span>
                     </div>
@@ -347,7 +368,7 @@ const Promoter = () => {
                         type="text"
                         name="lastName"
                         required
-                        // pattern="[a-zA-Z]{2}"
+                      // pattern="[a-zA-Z]{2}"
                       />
                       <span className="error">{getError.lastName}</span>
                     </div>
@@ -472,7 +493,7 @@ const Promoter = () => {
                         required
                         placeholder="Enter Father Name"
                         value={proFormData.fatherName}
-                        // pattern="^([a-zA-Zà-úÀ-Ú]{2,})+\s+([a-zA-Zà-úÀ-Ú\s]{2,})+$"
+                      // pattern="^([a-zA-Zà-úÀ-Ú]{2,})+\s+([a-zA-Zà-úÀ-Ú\s]{2,})+$"
                       />
                       <span className="error">{getError.fatherName}</span>
                     </div>
@@ -791,9 +812,9 @@ const Promoter = () => {
                         value={
                           (proFormData.shareNominalHold =
                             proFormData.totalShareValue &&
-                            proFormData.shareNominalValue
+                              proFormData.shareNominalValue
                               ? proFormData.totalShareValue /
-                                proFormData.shareNominalValue
+                              proFormData.shareNominalValue
                               : 0)
                         }
                         name="shareNominalHold"

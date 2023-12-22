@@ -10,17 +10,24 @@ const PromoterShareTransactionSchema = new mongoose.Schema({
     required: true,
   },
   transactionDate: {
-    type: Date,
+    type: String,
     required: true,
+    default: new Date().toString(),
   },
   membershipNumber: {
     type: Number,
     required: true,
+    default: 0,
   },
   sharesSold: {
     type: Number,
     required: true,
+    default: 0,
   },
+  transactionID: {
+    type: String,
+    required: true,
+  }
 });
 
 const PromoterShareTransaction =
