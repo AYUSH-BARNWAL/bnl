@@ -11,6 +11,12 @@ const membershipSchema = new mongoose.Schema({
   membershipNumber: {
     type: Number,
   },
+  numberofShares: {
+    type: Number,
+  },
+  shareValue: {
+    type: Number
+  }
 });
 
 const Membership =

@@ -5,18 +5,30 @@ import PromoterShareTransaction from "../../../../models/promoterShareTransactio
 connect();
 
 export async function POST(request) {
-    try {
-        const promoterShareTransaction = await request.json();
-        await PromoterShareTransaction.create(promoterShareTransaction);
+  //   try {
+  const promoterShareTransaction = await request.json();
+  /* await PromoterShareTransaction.create(promoterShareTransaction);
         return NextResponse.json({
-            success: true
-        })
-    } catch (error) {
-        console.log(error);
-        return NextResponse.json({
-            error: error.message
-        }, {
-            status: 500
-        });
+            success: true,
+            
+        }) */
+  return PromoterShareTransaction.create(promoterShareTransaction).then(
+    (doc) => {
+      return NextResponse.json({ success: true, doc });
+    },
+    (error) => {
+        console.log(error)
+      return NextResponse.json({ error });
     }
+  );
+  //   } catch (error) {
+  /*  console.log(error);
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 500,
+      }
+    ); */
 }

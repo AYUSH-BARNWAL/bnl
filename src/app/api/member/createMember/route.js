@@ -5,21 +5,13 @@ import Member from "../../../../models/memberModel";
 connect();
 
 export async function POST(request) {
-  try {
-    const member = await request.json();
-    await Member.create(member);
-    return NextResponse.json({
-      success: true,
-      message: "Member created successfully",
-    });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: error.message,
-      },
-      {
-        status: 400,
-      }
-    );
-  }
+  const member = await request.json();
+  return Member.create(member).then(
+    (doc) => {
+      return NextResponse.json({ doc });
+    },
+    (error) => {
+      return NextResponse.json({ error });
+    }
+  );
 }

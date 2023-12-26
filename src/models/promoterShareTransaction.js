@@ -14,6 +14,7 @@ const PromoterShareTransactionSchema = new mongoose.Schema({
     required: true,
     default: new Date().toString(),
   },
+
   membershipNumber: {
     type: Number,
     required: true,
@@ -27,7 +28,7 @@ const PromoterShareTransactionSchema = new mongoose.Schema({
   transactionID: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const PromoterShareTransaction =

@@ -88,29 +88,6 @@ const Member = () => {
   });
   const [promoters, setPromoters] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const bankAccounts = await axios.get("/api/bankAccount/getBankAccount");
-        setBanks(bankAccounts.data);
-        const membershipNumberData = await axios.get(
-          "/api/membership/getMembershipNumber"
-        );
-        const membershipNumber = membershipNumberData.data.membershipNumber;
-        console.log(membershipNumber);
-        setFormData((prevData) => ({
-          ...prevData,
-          membershipNumber: membershipNumber + 1,
-        }));
-        const promoters = await axios.get("/api/promoter/getPromoters");
-        setPromoters(promoters.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
-
   const nominee1 = () => {
     if (Nominee1 === true) {
       setdefault1(false);
@@ -267,39 +244,6 @@ const Member = () => {
     }
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      cash.membershipNumber = formData.membershipNumber;
-      cash.amount = payment.amount;
-      cash.membershipamount = payment.membershipCharge;
-      cash.shareamount = payment.sharePurchaseAmount;
-      console.log(formData);
-      console.log(getpaymode);
-      console.log(cash);
-      console.log(payment);
-      await axios.post("/api/member/createMember", formData).then(async () => {
-        if (getpaymode.paymode === "cash") {
-          try {
-            await axios.post("/api/cash/addNewMemberCash", cash);
-          } catch (err) {
-            console.log(err);
-          }
-        } else {
-          await axios.post("/api/chequeOrOnline/addNewMemberCheque", payment);
-        }
-      });
-      toast.success("Account Created Successfully");
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 3000);
-    } catch (err) {
-      console.log(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
   const handleBankChange = (event) => {
     setSelectedBank(event.target.value);
     formData.bankName = event.target.value;
@@ -355,6 +299,187 @@ const Member = () => {
     if (name === "paymode") setpaymode({ paymode: value });
   };
 
+  function generateTimestampOrderedStrings(prefix) {
+    const timestamp = Date.now();
+    const formattedTimestamp = prefix + timestamp.toString().slice(0, 10);
+    return formattedTimestamp;
+  }
+
+  const [p, setP] = useState({});
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      cash.membershipNumber = formData.membershipNumber;
+      cash.amount = payment.amount;
+      cash.membershipamount = payment.membershipCharge;
+      cash.shareamount = payment.sharePurchaseAmount;
+      console.log(formData);
+      console.log(getpaymode);
+      console.log(cash);
+      console.log(payment);
+
+      const createMember = async () => {
+        toast("Creating member");
+        return axios.post("/api/member/createMember", formData).then(
+          ({ data: { error, doc } }) => {
+            if (error) {
+              toast("Unable to create member");
+              console.log("Error", { error });
+              return { error };
+            } else {
+              toast("Member created successfully");
+              return { doc };
+            }
+          },
+          (error) => {
+            toast("Create member api call rejected");
+            return { error };
+          }
+        );
+      };
+
+      const detuctShares = async () => {
+        // toast("share transaction initiated");
+        return axios
+          .post("/api/promoter/addpromoterShares", {
+            transactionID: generateTimestampOrderedStrings("TRN-PTM-"),
+            promoterName: payment.promoter,
+            membershipNumber: formData.membershipNumber,
+            sharesLeft: p[payment.promoter] - payment.numberOfShares,
+            sharesSold: payment.numberOfShares,
+          })
+          .then(
+            ({ data: { error, doc } }) => {
+              if (doc) {
+                // toast("Share transaction successful");
+                return { doc };
+              } else {
+                // toast("Rejected by api");
+                return { error };
+              }
+            },
+            () => {
+              // toast("add promoter share api error");
+              return { error: "Unable to sell shares at this moment" };
+            }
+          );
+      };
+
+      const newSharesLeft = p[payment.promoter] - payment.numberOfShares;
+      if (newSharesLeft < 0) {
+        toast.error("Cannot debit more shares than available");
+        return;
+      }
+
+      createMember().then(({ error, doc }) => {
+        if (doc) {
+          toast("Initiating share transaction");
+          detuctShares().then(({ error, doc: d }) => {
+            if (error) {
+              toast("share transaction failed, rolling back member creation");
+              axios
+                .post("/api/member/deleteMember", { _id: doc._id })
+                .then(({ data: { success, error } }) => {
+                  if (success) {
+                    toast("Member deleted successfully");
+                  } else {
+                    toast("Unable to delete member");
+                    console.log({ error });
+                  }
+                });
+            } else {
+              toast("Share debited successfully, adding to member");
+              axios
+                .post("/api/membership/addMembership", {
+                  membershipCharge: payment.membershipCharge,
+                  membershipNumber: formData.membershipNumber,
+                  numberofShares: payment.numberOfShares,
+                  shareValue: payment.sharePurchaseAmount,
+                })
+                .then(
+                  ({ data: { error, doc } }) => {
+                    if (doc) {
+                      toast("Shares credited successfully");
+                      return;
+                    } else {
+                      toast(
+                        "Unable to credit shares at this moment, wait for some time"
+                      );
+                      return;
+                    }
+                  },
+                  () => {}
+                );
+            }
+          });
+        } else {
+        }
+      });
+
+      /*   const recordTransaction = async () => {
+        if (getpaymode.paymode === "cash") {
+
+        } else {
+
+        }
+      }; */
+
+      /*  await axios.post("/api/member/createMember", formData).then(async () => {
+        if (getpaymode.paymode === "cash") {
+          try {
+            await axios.post("/api/cash/addNewMemberCash", cash);
+          } catch (err) {
+            console.log(err);
+          }
+        } else {
+          await axios.post("/api/chequeOrOnline/addNewMemberCheque", payment);
+        }
+      }); */
+      // toast.success("Account Created Successfully");
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 3000);
+    } catch (err) {
+      console.log(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const bankAccounts = await axios.get("/api/bankAccount/getBankAccount");
+        setBanks(bankAccounts.data);
+        const membershipNumberData = await axios.get(
+          "/api/membership/getMembershipNumber"
+        );
+        const membershipNumber = membershipNumberData.data.membershipNumber;
+        console.log(membershipNumber);
+        setFormData((prevData) => ({
+          ...prevData,
+          membershipNumber: membershipNumber + 1,
+        }));
+        const promoters = await axios.get("/api/promoter/getPromoterShares");
+        console.log(promoters.data);
+        setP(promoters.data);
+        const arr = [];
+        for (let key in promoters.data) {
+          arr.push({ name: key, value: promoters.data[key] });
+        }
+        console.log(arr);
+        // console.log();
+        setPromoters(() => {
+          return arr;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
   const Line = () => {
     return <div className="w-11/12 mx-auto h-[1.5px] my-10 bg-gray-400" />;
   };
@@ -1236,7 +1361,7 @@ const Member = () => {
                   <input
                     //onBlur={(e) => handleError(e)}
                     onChange={handlePayChange}
-                    type="text"
+                    type="number"
                     name="sharePurchaseAmount"
                     required
                     value={payment.sharePurchaseAmount}
@@ -1251,7 +1376,7 @@ const Member = () => {
                   </label>
                   <input
                     onChange={handlePayChange}
-                    type="text"
+                    type="number"
                     name="numberOfShares"
                     value={payment.numberOfShares}
                     placeholder="Enter Number of Shares"
@@ -1268,7 +1393,7 @@ const Member = () => {
                   <input
                     //onBlur={(e) => handleError(e)}
                     onChange={handlePayChange}
-                    type="text"
+                    type="number"
                     name="membershipCharge"
                     required
                     value={payment.membershipCharge}
@@ -1292,9 +1417,9 @@ const Member = () => {
                     className="rounded-md border border-black px-2 h-10  bg-slate-300 w-full text-gray-700 cursor-pointer font-semibold"
                   >
                     <option value="">Select a Name</option>
-                    {promoters.map((name) => (
-                      <option key={name._id} value={name._id}>
-                        {`${name.firstName} ${name.lastName}`}
+                    {promoters.map((p) => (
+                      <option key={p.name} value={p.name}>
+                        {`${p.name}: ${p.value}`}
                       </option>
                     ))}
                   </select>
@@ -1458,7 +1583,7 @@ const Member = () => {
                       handlePayChange(e);
                       handleCashChange(e);
                     }}
-                    type="text"
+                    type="number"
                     name="total"
                     required
                     value={
