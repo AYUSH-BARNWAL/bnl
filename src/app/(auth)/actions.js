@@ -6,6 +6,7 @@ import connect from "@/db";
 import User from "@/models/user";
 import { saveJwtToken } from "./auth";
 import { deleteJwtToken } from "./auth";
+import { cookies } from "next/headers";
 
 connect();
 
@@ -68,6 +69,6 @@ export async function signupAction(pState, formData) {
 }
 
 export async function logoutAction() {
-  await deleteJwtToken();
+  cookies().delete("token");
   redirect("/login");
 }

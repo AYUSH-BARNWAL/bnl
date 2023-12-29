@@ -113,6 +113,7 @@ const MemberPage = () => {
     }
     if (formState?.success) {
       toast.success("Member created successfully");
+      // TODO: cash/cheque/online mode processing
     }
   }, [formState]);
 

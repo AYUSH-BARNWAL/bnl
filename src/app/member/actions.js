@@ -54,6 +54,7 @@ export async function addMemberAction(pState, formData) {
                     { $set: { sharesLeft: sl } }
                   ).then(
                     (ps) => {
+                      // TODO: cash/cheque/online mode processing
                       return {
                         success: true,
                         member: JSON.stringify(member),

@@ -14,12 +14,12 @@ export async function getJwtToken() {
   return token;
 }
 
-export async function deleteJwtToken() {
-  const token = await getJwtToken();
-  if (token) {
-    cookies().delete("token");
-  }
-}
+// export async function deleteJwtToken() {
+//   const token = await getJwtToken();
+//   if (token) {
+//     cookies().delete("token");
+//   }
+// }
 
 export async function saveJwtToken(payload, duration = "1h") {
   const jwt = await new jose.SignJWT(payload)
