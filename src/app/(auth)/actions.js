@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import connect from "@/db";
 import User from "@/models/user";
 import { saveJwtToken } from "./auth";
-import { deleteJwtToken } from "./auth";
 import { cookies } from "next/headers";
 
 connect();

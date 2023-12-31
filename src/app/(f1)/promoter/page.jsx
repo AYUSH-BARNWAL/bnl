@@ -84,7 +84,6 @@ export default function addPromoterPage() {
     setLoading(false);
 
     axios.get("/api/getBankAccounts").then(({ data: { bankAccounts } }) => {
-        console.log({bankAccounts})
       setBanks(bankAccounts);
     });
 

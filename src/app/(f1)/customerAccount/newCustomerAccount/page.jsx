@@ -210,7 +210,7 @@ export default function CustomerAccountPage() {
                           {(scheme) => {
                             return (
                               <SelectItem key={scheme.schemeName}>
-                                {scheme.schemeCode} - {scheme.schemeName}
+                                {`${scheme.schemeCode} - ${scheme.schemeName}`}
                               </SelectItem>
                             );
                           }}
