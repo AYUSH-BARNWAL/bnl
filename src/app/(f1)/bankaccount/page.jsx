@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { Input, Button } from "@nextui-org/react";
 import { addBankAccountAction } from "./actions";
 import Line from "@/components/line";
+import { format } from "date-fns";
 
 export default function BankAccountPage() {
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ export default function BankAccountPage() {
 
   return (
     <>
-      <h1 className="flex text-5xl pt-28 mb-8 font-medium text-slate-800 ml-16">
+      <h1 className="flex text-5xl pt-14 mb-8 font-medium text-slate-800 ml-16">
         New Bank Account Opening Form
       </h1>
       <Line />
@@ -78,6 +79,7 @@ export default function BankAccountPage() {
                     name="accountopeningdate"
                     isInvalid={formState?.error?.accountopeningdate}
                     errorMessage={formState?.error?.accountopeningdate}
+                    defaultValue={format(new Date(), "yyyy-MM-dd")}
                   />
                 </div>
               </div>

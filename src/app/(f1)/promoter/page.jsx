@@ -97,7 +97,7 @@ export default function addPromoterPage() {
 
   return (
     <>
-      <h1 className="flex text-5xl pt-28 mb-8 font-medium text-slate-800 ml-16">
+      <h1 className="flex text-5xl pt-14 mb-8 font-medium text-slate-800 ml-16">
         Promoter
       </h1>
       <Line />

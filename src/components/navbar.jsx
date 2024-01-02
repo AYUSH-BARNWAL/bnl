@@ -40,7 +40,7 @@ export default function Nav() {
         }}
       >
         <NavbarBrand className="max-w-fit flex-none">
-          <Image src="bnl.png" width={32} />
+          <Image src="/bnl.png" width={32} />
           <p className="text-2xl font-semibold">Betiyan Nidhi Ltd.</p>
         </NavbarBrand>
         <NavbarContent className="grow hidden lg:flex gap-8" justify={"center"}>
@@ -66,7 +66,7 @@ export default function Nav() {
         <NavbarContent justify="end" className="max-w-fit shrink">
           <Dropdown>
             <DropdownTrigger>
-              <Avatar src="avatar.png" />
+              <Avatar src="/avatar.png" />
             </DropdownTrigger>
             <DropdownMenu>
               <DropdownSection>
