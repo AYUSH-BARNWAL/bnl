@@ -26,7 +26,11 @@ export async function saveJwtToken(payload, duration = "1h") {
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setExpirationTime(duration)
     .sign(getJWTSecret());
-  cookies().set("token", jwt);
+  cookies().set("token", jwt, {
+    maxAge: 7 * 24 * 60 * 60,
+    httpOnly: true,
+    secure: true,
+  });
   return { success: true };
 }
 
