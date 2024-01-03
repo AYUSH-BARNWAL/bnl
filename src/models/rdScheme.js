@@ -29,7 +29,7 @@ const rdSchemeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  tenureRdMonth: {
+  rdTenureMonth: {
     type: Number,
     required: true,
   },
