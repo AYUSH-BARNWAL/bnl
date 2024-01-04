@@ -668,11 +668,11 @@ export default function addPromoterPage() {
                         trigger:
                           "border-black h-10 border px-2 pro rounded-md bg-slate-300 w-full text-gray-700 cursor-pointer font-semibold",
                       }}
-                      name="bankAccountNumber"
+                      name="accountNumber"
                       selectedKeys={[cAN]}
                       onChange={handleCANChange}
-                      isInvalid={formState?.error?.bankAccountNumber}
-                      errorMessage={formState?.error?.bankAccountNumber}
+                      isInvalid={formState?.error?.accountNumber}
+                      errorMessage={formState?.error?.accountNumber}
                       items={acOptions}
                     >
                       {(bank) => {

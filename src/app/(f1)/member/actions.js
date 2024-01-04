@@ -6,8 +6,8 @@ import Member from "@/models/member";
 
 import PromoterShare from "@/models/promoterShare";
 import ShareTransaction from "@/models/shareTransaction";
-import Generator from "@/models/generator";
 import Membership from "@/models/membership";
+import Counter from "@/models/counter";
 
 connect();
 export async function addMemberAction(pState, formData) {
@@ -23,12 +23,13 @@ export async function addMemberAction(pState, formData) {
       if (sl < 0) {
         return { error: "Cannot sell more shares than available" };
       }
-      const { membershipNumber } = await Generator.findOne();
-      console.log({ membershipNumber });
-      await Generator.updateOne(
-        { membershipNumber },
-        { membershipNumber: membershipNumber + 1 }
+      const { count: membershipNumber } = await Counter.findOneAndUpdate(
+        { variableName: "membershipNumber" },
+        { $inc: { count: 1 } },
+        { new: true, upsert: true }
       );
+      console.log({ membershipNumber });
+
       return Member.create({ ...rawFormData, membershipNumber }).then(
         (member) => {
           return ShareTransaction.create({
