@@ -6,7 +6,10 @@ import Counter from "@/models/counter";
 import FdScheme from "@/models/fdScheme";
 import RdScheme from "@/models/rdScheme";
 import SaScheme from "@/models/saScheme";
-
+import Transaction from "@/models/transaction";
+import { generateTimestampOrderedStrings } from "@/functions";
+import BankAccount from "@/models/bankAccount";
+import Membership from "@/models/membership";
 connect();
 
 async function allotAccountNumber(typ) {
@@ -30,6 +33,7 @@ async function allotAccountNumber(typ) {
 }
 
 export async function newCustomerAccountAction(pState, formData) {
+  const timestamp = generateTimestampOrderedStrings("TRN-D-");
   const rawFormData = Object.fromEntries(formData.entries());
   console.log({ rawFormData });
   const { accountType, total, schemeCode } = rawFormData;
@@ -62,7 +66,12 @@ export async function newCustomerAccountAction(pState, formData) {
       errorMessage: "Cannot open account with less than minimum amount",
     };
   }
-
+  const isMemberValid = await Membership.findOne({
+    membershipNumber: rawFormData.membershipNumber,
+  });
+  if (!isMemberValid) {
+    return { errorMessage: "Invalid membership number" };
+  }
   return allotAccountNumber(accountType).then(
     ({ doc: { count } }) => {
       const prefix = { rd: "BNL-RD-", fd: "BNL-FD-", sa: "BNL-SA-" };
@@ -73,10 +82,34 @@ export async function newCustomerAccountAction(pState, formData) {
         customerAccountNumber,
         balance: total,
       }).then(
-        (customerAccount) => {
+        async (customerAccount) => {
           console.log({ customerAccount });
-          // TODO: cash/cheque/online mode processing
-          return { success: true };
+          return Transaction.create({
+            transactionNumber: timestamp,
+            transactionDate: new Date(parseInt(timestamp.slice(6))),
+            transactionType: "credit",
+            paymode: rawFormData.paymode,
+            amount: total,
+            membershipNumber: rawFormData.membershipNumber,
+            customerAccountNumber,
+            bank_id:
+              rawFormData.paymode == "online"
+                ? (
+                    await BankAccount.findOne({
+                      accountNumber: rawFormData.accountNumber,
+                    })
+                  )._id
+                : "",
+            particular: "New customer account created",
+          }).then(
+            () => {
+              return { success: true };
+            },
+            (error) => {
+              console.log({ error });
+              return { errorMessage: "Receipt is pending" };
+            }
+          );
         },
         (error) => {
           console.log({ error });

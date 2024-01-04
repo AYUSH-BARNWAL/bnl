@@ -8,11 +8,14 @@ import PromoterShare from "@/models/promoterShare";
 import ShareTransaction from "@/models/shareTransaction";
 import Membership from "@/models/membership";
 import Counter from "@/models/counter";
+import Transaction from "@/models/transaction";
+import BankAccount from "@/models/bankAccount";
 
 connect();
 export async function addMemberAction(pState, formData) {
   const timestamp = generateTimestampOrderedStrings("TRN-SPTM-");
   const rawFormData = Object.fromEntries(formData.entries());
+  console.log({ rawFormData });
 
   //   TODO: Validate the input fields
 
@@ -21,7 +24,7 @@ export async function addMemberAction(pState, formData) {
       console.log({ promoterShare });
       let sl = promoterShare.sharesLeft - rawFormData.numberOfShares;
       if (sl < 0) {
-        return { error: "Cannot sell more shares than available" };
+        return { errorMessage: "Cannot sell more shares than available" };
       }
       const { count: membershipNumber } = await Counter.findOneAndUpdate(
         { variableName: "membershipNumber" },
@@ -29,8 +32,9 @@ export async function addMemberAction(pState, formData) {
         { new: true, upsert: true }
       );
       console.log({ membershipNumber });
+      rawFormData.membershipNumber = membershipNumber;
 
-      return Member.create({ ...rawFormData, membershipNumber }).then(
+      return Member.create(rawFormData).then(
         (member) => {
           return ShareTransaction.create({
             promoterId: promoterShare.promoterId,
@@ -39,13 +43,13 @@ export async function addMemberAction(pState, formData) {
             shareValue: rawFormData.sharePurchaseAmount,
             direction: "PTM",
             transactionNumber: timestamp,
-            membershipNumber: membershipNumber,
+            membershipNumber,
           }).then(
             (shareTransaction) => {
               return Membership.create({
                 date: new Date(parseInt(timestamp.slice(9))),
                 membershipCharge: rawFormData.membershipCharge,
-                numberofShares: rawFormData.numberOfShares,
+                numberOfShares: rawFormData.numberOfShares,
                 shareValue: rawFormData.sharePurchaseAmount,
                 membershipNumber,
               }).then(
@@ -54,15 +58,38 @@ export async function addMemberAction(pState, formData) {
                     { promoterId: promoterShare.promoterId },
                     { $set: { sharesLeft: sl } }
                   ).then(
-                    (ps) => {
-                      // TODO: cash/cheque/online mode processing
-                      return {
-                        success: true,
-                        member: JSON.stringify(member),
-                        shareTransaction: JSON.stringify(member),
-                        membership: JSON.stringify(membership),
-                        promoterShare: JSON.stringify(ps),
-                      };
+                    async (ps) => {
+                      return Transaction.create({
+                        transactionNumber: timestamp,
+                        transactionType: "share",
+                        transactionDate: new Date(parseInt(timestamp.slice(9))),
+                        amount: rawFormData.total,
+                        membershipNumber,
+                        paymode: rawFormData.paymode,
+                        bank_id:
+                          rawFormData.paymode == "online"
+                            ? (
+                                await BankAccount.findOne({
+                                  accountNumber: rawFormData.accountNumber,
+                                })
+                              )._id
+                            : "",
+                        particular: "Membership created",
+                      }).then(
+                        () => {
+                          return {
+                            success: true,
+                            member: JSON.stringify(member),
+                            shareTransaction: JSON.stringify(member),
+                            membership: JSON.stringify(membership),
+                            promoterShare: JSON.stringify(ps),
+                          };
+                        },
+                        (error) => {
+                          console.log({ error });
+                          return { errorMessage: "Transaction is pending" };
+                        }
+                      );
                     },
                     () => {
                       return {

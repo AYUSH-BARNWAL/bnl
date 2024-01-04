@@ -105,7 +105,7 @@ const promoterSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  bankAccountNumber: {
+  accountNumber: {
     type: String,
     required: true,
   },

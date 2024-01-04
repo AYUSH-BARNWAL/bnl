@@ -40,18 +40,18 @@ export default function CustomerAccountPage() {
     // console.log({ e });
     if (accountType == "rd") {
       const s = rdSchemes.find((scheme) => scheme.schemeCode == e.target.value);
-      setMinAmount(s.minimumRdAmt);
+      setMinAmount(s?.minimumRdAmt);
       // console.log({ s });
     }
     if (accountType == "fd") {
       const s = fdSchemes.find((scheme) => scheme.schemeCode == e.target.value);
       // setMinAmount(rdSchemes.find({schemeCode: e.target.value}))
       // console.log({ s });
-      setMinAmount(s.minimumFdAmt);
+      setMinAmount(s?.minimumFdAmt);
     }
     if (accountType == "sa") {
       const s = saSchemes.find((scheme) => scheme.schemeCode == e.target.value);
-      setMinAmount(s.minimumBalance);
+      setMinAmount(s?.minimumBalance);
       // setMinAmount(rdSchemes.find({schemeCode: e.target.value}))
       // console.log({ s });
     }
@@ -172,7 +172,7 @@ export default function CustomerAccountPage() {
                       <Input
                         label="Membership Name: "
                         labelPlacement={"outside"}
-                        placeholder="Enter Membership Name"
+                        placeholder="Enter Member Name"
                         isRequired
                         classNames={{
                           label: "font-bold text-lg text-gray-700",

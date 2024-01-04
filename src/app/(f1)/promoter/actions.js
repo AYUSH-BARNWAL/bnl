@@ -4,7 +4,9 @@ import connect from "@/db";
 import Promoter from "@/models/promoter";
 import ShareTransaction from "@/models/shareTransaction";
 import PromoterShare from "@/models/promoterShare";
+import Transaction from "@/models/transaction";
 import { generateTimestampOrderedStrings } from "@/functions";
+import BankAccount from "@/models/bankAccount";
 connect();
 
 export async function addPromoterAction(pState, formData) {
@@ -12,6 +14,7 @@ export async function addPromoterAction(pState, formData) {
   const rawFormData = Object.fromEntries(formData.entries());
 
   //   TODO: Validate the fields in error object
+
   return Promoter.create(rawFormData).then(
     (promoter) => {
       // return { success: "Promoter created" };
@@ -31,9 +34,27 @@ export async function addPromoterAction(pState, formData) {
             promoterName: shareTransaction.promoterName,
             sharesLeft: shareTransaction.sharesSold,
           }).then(
-            () => {
-              // TODO: receipt work
-              return { success: true };
+            async () => {
+              return Transaction.create({
+                transactionNumber: timestamp,
+                transactionType: "share",
+                transactionDate: new Date(parseInt(timestamp.slice(9))),
+                amount: rawFormData.totalShareValue,
+                paymode: "online",
+                bank_id: (await BankAccount.findOne({accountNumber: rawFormData.accountNumber}))._id,
+                particular: "Promoter added",
+              }).then(
+                () => {
+                  return { success: true };
+                },
+                (error) => {
+                  console.log({ error });
+                  return {
+                    errorMessage:
+                      "Receipt couldn't be generated, but promoter has been added",
+                  };
+                }
+              );
             },
             (error) => {
               console.log({ error });
