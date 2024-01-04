@@ -32,10 +32,29 @@ export default function CustomerAccountPage() {
   const [cAN, setCAN] = useState();
   const [paymentMode, setPaymentMode] = useState("cash");
   const [accountType, setAccountType] = useState();
+  const [minAmount, setMinAmount] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const handleSchemeChange = (e) => {
     setCScheme(() => e.target.value);
     // console.log({ e });
+    if (accountType == "rd") {
+      const s = rdSchemes.find((scheme) => scheme.schemeCode == e.target.value);
+      setMinAmount(s.minimumRdAmt);
+      // console.log({ s });
+    }
+    if (accountType == "fd") {
+      const s = fdSchemes.find((scheme) => scheme.schemeCode == e.target.value);
+      // setMinAmount(rdSchemes.find({schemeCode: e.target.value}))
+      // console.log({ s });
+      setMinAmount(s.minimumFdAmt);
+    }
+    if (accountType == "sa") {
+      const s = saSchemes.find((scheme) => scheme.schemeCode == e.target.value);
+      setMinAmount(s.minimumBalance);
+      // setMinAmount(rdSchemes.find({schemeCode: e.target.value}))
+      // console.log({ s });
+    }
   };
 
   const handleAccountTypeChange = (e) => {
@@ -80,8 +99,13 @@ export default function CustomerAccountPage() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    if (total < minAmount) {
+      e.preventDefault();
+      // formState.error.total = "Check again";
+    }
     setLoading(true);
+    // console.log({ cScheme });
   };
   useEffect(() => {
     setLoading(false);
@@ -197,7 +221,7 @@ export default function CustomerAccountPage() {
                             "border-black h-10 border px-2 pro rounded-md bg-slate-300 w-full text-gray-700 cursor-pointer font-semibold",
                         }}
                         items={schemeOptions}
-                        name="scheme"
+                        name="schemeCode"
                         selectedKeys={[cScheme]}
                         onChange={handleSchemeChange}
                         isInvalid={formState?.error?.scheme}
@@ -205,7 +229,7 @@ export default function CustomerAccountPage() {
                       >
                         {(scheme) => {
                           return (
-                            <SelectItem key={scheme.schemeName}>
+                            <SelectItem key={scheme.schemeCode}>
                               {`${scheme.schemeCode} - ${scheme.schemeName}`}
                             </SelectItem>
                           );
@@ -270,19 +294,24 @@ export default function CustomerAccountPage() {
                     </div>
                     <div className="flex flex-col w-2/5">
                       <Input
-                        label="Amount deposited"
+                        label="Amount"
                         labelPlacement={"outside"}
                         isRequired
-                        placeholder="Enter amount deposited"
+                        placeholder="Enter amount"
                         classNames={{
                           label: "font-bold text-lg text-gray-700",
                           inputWrapper:
                             "border-black h-10 border px-2 pro rounded-md bg-slate-300 w-full text-gray-700 cursor-pointer font-semibold",
                         }}
-                        name="amountDeposited"
+                        name="total"
                         type="number"
-                        isInvalid={formState?.error?.amountDeposited}
-                        errorMessage={formState?.error?.amountDeposited}
+                        isInvalid={formState?.error?.total || total < minAmount}
+                        errorMessage={formState?.error?.total}
+                        description={
+                          minAmount ? `Minimum amount: ${minAmount}` : ""
+                        }
+                        value={total}
+                        onValueChange={setTotal}
                       />
                     </div>
                   </div>
@@ -312,13 +341,13 @@ export default function CustomerAccountPage() {
                         classNames={{
                           label: "font-bold text-lg text-gray-700",
                         }}
-                        name="paymentMode"
+                        name="paymode"
                         defaultValue="cash"
                         orientation={"horizontal"}
                         value={paymentMode}
                         onValueChange={setPaymentMode}
-                        isInvalid={formState?.error?.paymentMode}
-                        errorMessage={formState?.error?.paymentMode}
+                        isInvalid={formState?.error?.paymode}
+                        errorMessage={formState?.error?.paymode}
                       >
                         <Radio value="cash">Cash</Radio>
                         <Radio value="cheque">Cheque</Radio>
@@ -395,11 +424,11 @@ export default function CustomerAccountPage() {
                               trigger:
                                 "border-black h-10 border px-2 pro rounded-md bg-slate-300 w-full text-gray-700 cursor-pointer font-semibold",
                             }}
-                            name="bankAccountNumber"
+                            name="accountNumber"
                             selectedKeys={[cAN]}
                             onChange={handleCANChange}
-                            isInvalid={formState?.error?.bankAccountNumber}
-                            errorMessage={formState?.error?.bankAccountNumber}
+                            isInvalid={formState?.error?.accountNumber}
+                            errorMessage={formState?.error?.accountNumber}
                             items={acOptions}
                           >
                             {(bank) => {
@@ -432,6 +461,7 @@ export default function CustomerAccountPage() {
               <Button
                 type="submit"
                 className="bg-red-600 cursor-pointer tracking-wider font-bold w-fit justify-end self-end items-end rounded-lg shadow-xl text-gray-50 px-6 py-1.5 text-xl"
+                isDisabled={total < minAmount}
               >
                 CREATE
               </Button>

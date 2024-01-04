@@ -13,7 +13,7 @@ const customerAccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  scheme: {
+  schemeCode: {
     type: String,
     required: true,
   },
@@ -29,15 +29,8 @@ const customerAccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  amountDeposited: {
-    type: Number,
-    required: true,
-  },
-  transactionDate: {
-    type: Date,
-    required: true,
-  },
-  paymentMode: {
+  balance: Number,
+  customerAccountNumber: {
     type: String,
     required: true,
   },
