@@ -82,13 +82,40 @@ export async function transactionAction(pState, formData) {
             return { success: "Transaction successful" };
           }
 
-          break;
-
         case "rd":
+          if (transactionType == "credit") {
+            const t = await Transaction.create({
+              ...rawFormData,
+              balance: amount + customerAccount.balance,
+              bank_id:
+                rawFormData.paymode == "online"
+                  ? (
+                      await BankAccount.findOne({
+                        accountNumber: rawFormData.accountNumber,
+                      })
+                    )._id
+                  : "",
+            });
+            const c = await CustomerAccount.findOneAndUpdate(
+              {
+                membershipNumber,
+                customerAccountNumber,
+                accountType,
+              },
+              { $set: { balance: amount + customerAccount.balance } }
+            );
+            return { success: "Transaction successful" };
+          } else {
+            return {
+              errorMessage: "This transaction is not supported at this moment",
+            };
+          }
           break;
 
-        case "fd":
-          break;
+        default:
+          return {
+            errorMessage: "This transaction is not supported at this moment",
+          };
       }
     },
     (error) => {
