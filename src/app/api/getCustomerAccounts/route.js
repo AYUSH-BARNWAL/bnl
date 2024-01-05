@@ -29,3 +29,12 @@ export async function POST(request) {
   }
   return NextResponse.json({ message: "Hello" });
 }
+
+export async function GET(request) {
+  try {
+    const customerAccounts = await CustomerAccount.find({});
+    return NextResponse.json({ customerAccounts });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

@@ -45,14 +45,48 @@ export default function Nav() {
         </NavbarBrand>
         <NavbarContent className="grow hidden lg:flex gap-8" justify={"center"}>
           <NavbarItem className="">
-            <Link href="/member" className="text-white hover:text-primary">
+            {/* <Link href="/member" className="text-white hover:text-primary">
               Member
-            </Link>
+            </Link> */}
+            <Dropdown backdrop="blur">
+              <DropdownTrigger className="hover:cursor-pointer">
+                Member
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownSection>
+                  <DropdownItem as={Link} href="/availablemember">
+                    Available Members
+                  </DropdownItem>
+                  {/* </DropdownSection>
+                <DropdownSection> */}
+                  <DropdownItem as={Link} href="/member">
+                    New Member
+                  </DropdownItem>
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
           </NavbarItem>
           <NavbarItem>
-            <Link href="/promoter" className="text-white hover:text-primary">
+            {/* <Link href="/promoter" className="text-white hover:text-primary">
               Promoter
-            </Link>
+            </Link> */}
+            <Dropdown backdrop="blur">
+              <DropdownTrigger className="hover:cursor-pointer">
+                Promoter
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownSection>
+                  <DropdownItem as={Link} href="/availablepromoter">
+                    Available Promoters
+                  </DropdownItem>
+                  {/* </DropdownSection>
+                <DropdownSection> */}
+                  <DropdownItem as={Link} href="/promoter">
+                    New Promoter
+                  </DropdownItem>
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
           </NavbarItem>
           <NavbarItem>
             <Link href="/transaction" className="text-white hover:text-primary">
@@ -60,10 +94,59 @@ export default function Nav() {
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link href="/bankaccount" className="text-white hover:text-primary">
+            {/* <Link href="/bankaccount" className="text-white hover:text-primary">
               Bank Account
-            </Link>
+            </Link> */}
+            <Dropdown backdrop="blur">
+              <DropdownTrigger className="hover:cursor-pointer">
+                Bank Account
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownSection>
+                  <DropdownItem as={Link} href="/availableBankAccounts">
+                    Available Bank Accounts
+                  </DropdownItem>
+                  {/* </DropdownSection>
+                <DropdownSection> */}
+                  <DropdownItem as={Link} href="/bankaccount">
+                    New Bank Account
+                  </DropdownItem>
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
           </NavbarItem>
+          <NavbarItem>
+            {/* <Link
+              href="/customerAccount"
+              className="text-white hover:text-primary"
+            >
+              Bank Account
+            </Link> */}
+            <Dropdown backdrop="blur">
+              <DropdownTrigger className="hover:cursor-pointer">
+                Customer Account
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownSection>
+                  <DropdownItem
+                    as={Link}
+                    href="/customerAccount/availableCustomerAccount"
+                  >
+                    Available Customer Accounts
+                  </DropdownItem>
+                  {/* </DropdownSection>
+                <DropdownSection> */}
+                  <DropdownItem
+                    as={Link}
+                    href="/customerAccount/newCustomerAccount"
+                  >
+                    New Customer Account
+                  </DropdownItem>
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
+          </NavbarItem>
+
           <NavbarItem>Bankbook</NavbarItem>
           <NavbarItem>Cashbook</NavbarItem>
         </NavbarContent>
@@ -82,7 +165,6 @@ export default function Nav() {
               <DropdownSection>
                 <DropdownItem>Dashboard</DropdownItem>
                 <DropdownItem>Settings</DropdownItem>
-                <DropdownItem>Earnings</DropdownItem>
               </DropdownSection>
               <DropdownSection>
                 <DropdownItem as={Button} color="danger" onClick={logout}>
