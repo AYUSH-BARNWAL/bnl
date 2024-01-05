@@ -54,7 +54,11 @@ export default function Nav() {
               Promoter
             </Link>
           </NavbarItem>
-          <NavbarItem>Transaction</NavbarItem>
+          <NavbarItem>
+            <Link href="/transaction" className="text-white hover:text-primary">
+              Transaction
+            </Link>
+          </NavbarItem>
           <NavbarItem>
             <Link href="/bankaccount" className="text-white hover:text-primary">
               Bank Account
