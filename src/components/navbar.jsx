@@ -150,8 +150,12 @@ export default function Nav() {
             </Dropdown>
           </NavbarItem>
 
-          <NavbarItem>Bankbook</NavbarItem>
-          <NavbarItem>Cashbook</NavbarItem>
+          <NavbarItem as={Link} href="/transactionBook" className="text-white">
+            Transaction Book
+          </NavbarItem>
+          {/* <NavbarItem as={Link} href="/cashbook" className="text-white">
+            Cashbook
+          </NavbarItem> */}
           <NavbarItem>
             <Dropdown backdrop="blur">
               <DropdownTrigger className="hover:cursor-pointer">
