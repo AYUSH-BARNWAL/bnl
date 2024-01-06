@@ -40,7 +40,7 @@ export default function AvailableCustomerAccountPage() {
       const membershipNumber = String(customerAccount.membershipNumber);
       const accountNumber = String(
         customerAccount.customerAccountNumber
-      ).trim();
+      ).toLowerCase();
       return (
         accountNumber.includes(query) ||
         fullName.includes(query) ||
