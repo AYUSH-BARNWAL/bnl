@@ -34,6 +34,25 @@ export default function CustomerAccountPage() {
   const [accountType, setAccountType] = useState();
   const [minAmount, setMinAmount] = useState(0);
   const [total, setTotal] = useState(0);
+  const [memberName, setMemberName] = useState("");
+  const [membershipNumber, setMembershipNumber] = useState(0);
+
+  const getMemberName = (e) => {
+    axios
+      .get("/api/getMemberAccounts", { params: { membershipNumber } })
+      .then(({ data: { member } }) => {
+        if (member) {
+          setMemberName(
+            `${member.firstName} ${member.middleName}${
+              member.middleName ? " " : ""
+            }${member.lastName}`
+          );
+        } else {
+          toast.error("Server error or invalid memberhip number");
+          setMemberName("");
+        }
+      });
+  };
 
   const handleSchemeChange = (e) => {
     setCScheme(() => e.target.value);
@@ -152,13 +171,14 @@ export default function CustomerAccountPage() {
                 <p className="text-xl font-bold text-gray-900 w-1/3 text-left"></p>
                 <div className="flex flex-col gap-10 w-full">
                   <div className="flex flex-row gap-24">
-                    <div className="flex flex-col w-2/5">
+                    <div className="flex w-2/5 items-end gap-2">
                       <Input
                         label="Membership Number"
                         labelPlacement={"outside"}
                         placeholder="Enter membership number"
                         isRequired
                         classNames={{
+                          base: "w-3/4",
                           label: "font-bold text-lg text-gray-700",
                           inputWrapper:
                             "border-black h-10 border px-2 pro rounded-md bg-slate-300 w-full text-gray-700 cursor-pointer font-semibold",
@@ -166,7 +186,11 @@ export default function CustomerAccountPage() {
                         name="membershipNumber"
                         isInvalid={formState?.error?.membershipNumber}
                         errorMessage={formState?.error?.membershipNumber}
+                        type="number"
+                        value={membershipNumber}
+                        onValueChange={setMembershipNumber}
                       />
+                      <Button onClick={getMemberName}>Search</Button>
                     </div>
                     <div className="flex flex-col w-2/5">
                       <Input
@@ -182,6 +206,7 @@ export default function CustomerAccountPage() {
                         name="memberName"
                         isInvalid={formState?.error?.memberName}
                         errorMessage={formState?.error?.memberName}
+                        value={memberName}
                       />
                     </div>
                   </div>
