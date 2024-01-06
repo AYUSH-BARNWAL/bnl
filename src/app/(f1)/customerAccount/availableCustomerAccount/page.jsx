@@ -15,6 +15,14 @@ import {
 
 export default function AvailableCustomerAccountPage() {
   const [customerAccounts, setCustomerAccounts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredCustomerAccounts, setFilteredCustomerAccounts] =
+    useState(customerAccounts);
+
+  useEffect(() => {
+    setCustomerAccounts(customerAccounts || []);
+    setFilteredCustomerAccounts(customerAccounts || []);
+  }, [customerAccounts]);
 
   useEffect(() => {
     axios
@@ -23,6 +31,25 @@ export default function AvailableCustomerAccountPage() {
         setCustomerAccounts(customerAccounts || []);
       });
   }, []);
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = customerAccounts.filter((customerAccount) => {
+      const fullName = `${customerAccount.memberName}`.toLowerCase();
+      const membershipNumber = String(customerAccount.membershipNumber);
+      const accountNumber = String(
+        customerAccount.customerAccountNumber
+      ).trim();
+      return (
+        accountNumber.includes(query) ||
+        fullName.includes(query) ||
+        membershipNumber.includes(query)
+      );
+    });
+    setFilteredCustomerAccounts(filtered);
+    setPage(1);
+  };
 
   const [page, setPage] = React.useState(1);
   const rowsPerPage = 10;
@@ -38,9 +65,20 @@ export default function AvailableCustomerAccountPage() {
 
   return (
     <div>
-      <h1 className="flex text-4xl pt-14 mb-8 font-medium text-slate-800 text-center justify-center">
-        Registered Customer Accounts
-      </h1>
+      <div>
+        <h1 className=" text-4xl pt-14  font-medium text-slate-800 text-center justify-center">
+          Customer Accounts Registered
+        </h1>
+        <div className="flex justify-start ml-5 mb-4">
+          <input
+            type="text"
+            placeholder="Search accounts in the list"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="border p-2 rounded-md"
+          />
+        </div>
+      </div>
       <Table
         bottomContent={
           <div className="flex w-full justify-center">
@@ -61,6 +99,9 @@ export default function AvailableCustomerAccountPage() {
       >
         <TableHeader>
           <TableColumn key="membershipNumber">Membership Number</TableColumn>
+          <TableColumn key="customerAccountNumber">
+            Customer Account Number
+          </TableColumn>
           <TableColumn key="memberName">Member Name</TableColumn>
           <TableColumn key="accountType">Account Type</TableColumn>
           <TableColumn key="schemeCode">Scheme Code</TableColumn>
@@ -68,14 +109,12 @@ export default function AvailableCustomerAccountPage() {
           <TableColumn key="typeOfAccount">Type of Account</TableColumn>
           <TableColumn key="nominee">Nominee</TableColumn>
           <TableColumn key="balance">Balance</TableColumn>
-          <TableColumn key="customerAccountNumber">
-            Customer Account Number
-          </TableColumn>
         </TableHeader>
-        <TableBody items={customerAccounts}>
+        <TableBody items={filteredCustomerAccounts}>
           {(item) => (
             <TableRow key={item.membershipNumber}>
               <TableCell>{item.membershipNumber}</TableCell>
+              <TableCell>{item.customerAccountNumber}</TableCell>
               <TableCell>{item.memberName}</TableCell>
               <TableCell>{item.accountType}</TableCell>
               <TableCell>{item.schemeCode}</TableCell>
@@ -85,7 +124,6 @@ export default function AvailableCustomerAccountPage() {
               <TableCell>{item.typeOfAccount}</TableCell>
               <TableCell>{item.nominee}</TableCell>
               <TableCell>{item.balance}</TableCell>
-              <TableCell>{item.customerAccountNumber}</TableCell>
             </TableRow>
           )}
         </TableBody>

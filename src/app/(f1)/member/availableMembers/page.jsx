@@ -15,6 +15,13 @@ import {
 
 export default function AvailableMembers() {
   const [members, setMembers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredMembers, setFilteredMembers] = useState(members);
+
+  useEffect(() => {
+    setMembers(members || []);
+    setFilteredMembers(members || []);
+  }, [members]);
 
   useEffect(() => {
     axios.get("/api/getMemberAccounts").then(({ data: { members } }) => {
@@ -22,9 +29,21 @@ export default function AvailableMembers() {
     });
   }, []);
 
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = members.filter((member) => {
+      const fullName =
+        `${member.firstName} ${member.middleName} ${member.lastName}`.toLowerCase();
+      const membershipNumber = String(member.membershipNumber);
+      return fullName.includes(query) || membershipNumber.includes(query);
+    });
+    setFilteredMembers(filtered);
+    setPage(1);
+  };
+
   const [page, setPage] = React.useState(1);
   const rowsPerPage = 10;
-
   const pages = Math.ceil(members.length / rowsPerPage);
 
   const items = React.useMemo(() => {
@@ -36,9 +55,20 @@ export default function AvailableMembers() {
 
   return (
     <div>
-      <h1 className="flex text-4xl pt-14 mb-8 font-medium text-slate-800 text-center justify-center">
-        Members Registered
-      </h1>
+      <div>
+        <h1 className=" text-4xl pt-14  font-medium text-slate-800 text-center justify-center">
+          Members Registered
+        </h1>
+        <div className="flex justify-start ml-5 mb-4">
+          <input
+            type="text"
+            placeholder="Search members in the list"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="border p-2 rounded-md"
+          />
+        </div>
+      </div>
 
       <Table
         bottomContent={
@@ -71,7 +101,7 @@ export default function AvailableMembers() {
           {/* <TableColumn key="maritalStatus">Marital Status</TableColumn>
           <TableColumn key="spouseName">Spouse Name</TableColumn> */}
         </TableHeader>
-        <TableBody items={members}>
+        <TableBody items={filteredMembers}>
           {(item) => (
             <TableRow key={item.membershipNumber}>
               <TableCell className="text-sm">{item.membershipNumber}</TableCell>
