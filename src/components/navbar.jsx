@@ -40,7 +40,7 @@ export default function Nav() {
         }}
       >
         <NavbarBrand className="max-w-fit flex-none">
-          <Image src="/bnl.png" width={32} />
+          <Image src="/bnl.png" width={32} alt="" />
           <p className="text-2xl font-semibold">Betiyan Nidhi Ltd.</p>
         </NavbarBrand>
         <NavbarContent className="grow hidden lg:flex gap-8" justify={"center"}>
@@ -54,12 +54,12 @@ export default function Nav() {
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection>
-                  <DropdownItem as={Link} href="/availablemember">
+                  <DropdownItem as={Link} href="/member/availableMembers">
                     Available Members
                   </DropdownItem>
                   {/* </DropdownSection>
                 <DropdownSection> */}
-                  <DropdownItem as={Link} href="/member">
+                  <DropdownItem as={Link} href="/member/newMember">
                     New Member
                   </DropdownItem>
                 </DropdownSection>
@@ -76,12 +76,12 @@ export default function Nav() {
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection>
-                  <DropdownItem as={Link} href="/availablepromoter">
+                  <DropdownItem as={Link} href="/promoter/availablePromoters">
                     Available Promoters
                   </DropdownItem>
                   {/* </DropdownSection>
                 <DropdownSection> */}
-                  <DropdownItem as={Link} href="/promoter">
+                  <DropdownItem as={Link} href="/promoter/newPromoter">
                     New Promoter
                   </DropdownItem>
                 </DropdownSection>
@@ -103,12 +103,15 @@ export default function Nav() {
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection>
-                  <DropdownItem as={Link} href="/availableBankAccounts">
+                  <DropdownItem
+                    as={Link}
+                    href="/bankAccount/availableBankAccounts"
+                  >
                     Available Bank Accounts
                   </DropdownItem>
                   {/* </DropdownSection>
                 <DropdownSection> */}
-                  <DropdownItem as={Link} href="/bankaccount">
+                  <DropdownItem as={Link} href="/bankAccount/newBankAccount">
                     New Bank Account
                   </DropdownItem>
                 </DropdownSection>
@@ -149,6 +152,29 @@ export default function Nav() {
 
           <NavbarItem>Bankbook</NavbarItem>
           <NavbarItem>Cashbook</NavbarItem>
+          <NavbarItem>
+            <Dropdown backdrop="blur">
+              <DropdownTrigger className="hover:cursor-pointer">
+                Schemes
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownSection>
+                  <DropdownItem as={Link} href="/schemes/availableSchemes">
+                    All Schemes
+                  </DropdownItem>
+                  <DropdownItem as={Link} href="/schemes/fdscheme">
+                    New FD Scheme
+                  </DropdownItem>
+                  <DropdownItem as={Link} href="/schemes/rdscheme">
+                    New RD Scheme
+                  </DropdownItem>
+                  <DropdownItem as={Link} href="/schemes/sascheme">
+                    New SA Scheme
+                  </DropdownItem>
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
+          </NavbarItem>
         </NavbarContent>
         <NavbarContent justify="end" className="max-w-fit shrink">
           <Dropdown>

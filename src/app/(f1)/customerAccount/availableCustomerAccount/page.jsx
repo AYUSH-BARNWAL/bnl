@@ -39,38 +39,8 @@ export default function AvailableCustomerAccountPage() {
   return (
     <div>
       <h1 className="flex text-4xl pt-14 mb-8 font-medium text-slate-800 text-center justify-center">
-        Available Customer Accounts
+        Registered Customer Accounts
       </h1>
-      {/* <table>
-        <thead>
-          <tr>
-            <th>Membership Number</th>
-            <th>Member Name</th>
-            <th>Account Type</th>
-            <th>Scheme Code</th>
-            <th>Opening Date</th>
-            <th>Type of Account</th>
-            <th>Nominee</th>
-            <th>Balance</th>
-            <th>Customer Account Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {customerAccounts.map((account) => (
-            <tr key={account.customerAccountNumber}>
-              <td>{account.membershipNumber}</td>
-              <td>{account.memberName}</td>
-              <td>{account.accountType}</td>
-              <td>{account.schemeCode}</td>
-              <td>{account.openingDate}</td>
-              <td>{account.typeOfAccount}</td>
-              <td>{account.nominee}</td>
-              <td>{account.balance}</td>
-              <td>{account.customerAccountNumber}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
       <Table
         bottomContent={
           <div className="flex w-full justify-center">
@@ -109,7 +79,9 @@ export default function AvailableCustomerAccountPage() {
               <TableCell>{item.memberName}</TableCell>
               <TableCell>{item.accountType}</TableCell>
               <TableCell>{item.schemeCode}</TableCell>
-              <TableCell>{item.openingDate}</TableCell>
+              <TableCell>
+                {new Date(item.openingDate).toLocaleDateString()}
+              </TableCell>
               <TableCell>{item.typeOfAccount}</TableCell>
               <TableCell>{item.nominee}</TableCell>
               <TableCell>{item.balance}</TableCell>

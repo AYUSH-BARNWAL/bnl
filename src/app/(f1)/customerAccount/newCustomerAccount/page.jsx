@@ -12,7 +12,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { newCustomerAccountAction } from "../actions";
+import { newCustomerAccountAction } from "./actions";
 import Line from "@/components/line";
 import { toast } from "react-toastify";
 
@@ -154,7 +154,7 @@ export default function CustomerAccountPage() {
                   <div className="flex flex-row gap-24">
                     <div className="flex flex-col w-2/5">
                       <Input
-                        label="Member Number"
+                        label="Membership Number"
                         labelPlacement={"outside"}
                         placeholder="Enter membership number"
                         isRequired
@@ -170,7 +170,7 @@ export default function CustomerAccountPage() {
                     </div>
                     <div className="flex flex-col w-2/5">
                       <Input
-                        label="Membership Name: "
+                        label="Member Name: "
                         labelPlacement={"outside"}
                         placeholder="Enter Member Name"
                         isRequired

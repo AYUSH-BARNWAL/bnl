@@ -15,7 +15,7 @@ import { addPromoterAction } from "./actions";
 import Line from "@/components/line";
 import axios from "axios";
 
-export default function addPromoterPage() {
+export default function AddPromoterPage() {
   const [loading, setLoading] = useState(false);
   const [martial, setMartial] = useState("unmarried");
   const [formState, formAction] = useFormState(addPromoterAction, {});
