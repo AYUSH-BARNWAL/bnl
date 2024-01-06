@@ -4,7 +4,6 @@ import React from "react";
 import axios from "axios";
 import Line from "@/components/line";
 import { Button } from "@nextui-org/react";
-
 import {
   Table,
   TableHeader,
@@ -15,7 +14,6 @@ import {
   Pagination,
   getKeyValue,
 } from "@nextui-org/react";
-
 const saColumns = [
   {
     key: "schemeName",
@@ -161,6 +159,30 @@ export default function AvailableSchemes() {
     });
   }, []);
 
+  const renderTable = (type, columns, data) => {
+    if (schemeType === type) {
+      return (
+        <Table aria-label={`Example table for ${type} schemes`}>
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn key={column.key}>{column.label}</TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={data}>
+            {(item) => (
+              <TableRow key={item.schemeCode}>
+                {(columnKey) => (
+                  <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      );
+    }
+    return null;
+  };
+
   return (
     <div>
       <h1 className="flex text-4xl mt-8 -mb-4 font-medium justify-center text-slate-800 ">
@@ -188,60 +210,9 @@ export default function AvailableSchemes() {
         </Button>
       </div>
       <div>
-        {schemeType === "SA" && (
-          <Table aria-label="Example table with dynamic content">
-            <TableHeader columns={saColumns}>
-              {(column) => (
-                <TableColumn key={column.key}>{column.label}</TableColumn>
-              )}
-            </TableHeader>
-            <TableBody items={saSchemes}>
-              {(item) => (
-                <TableRow key={item.schemeCode}>
-                  {(columnKey) => (
-                    <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
-        {schemeType === "FD" && (
-          <Table aria-label="Example table with dynamic content">
-            <TableHeader columns={fdColumns}>
-              {(column) => (
-                <TableColumn key={column.key}>{column.label}</TableColumn>
-              )}
-            </TableHeader>
-            <TableBody items={fdSchemes}>
-              {(item) => (
-                <TableRow key={item.schemeCode}>
-                  {(columnKey) => (
-                    <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
-        {schemeType === "RD" && (
-          <Table aria-label="Example table with dynamic content">
-            <TableHeader columns={rdColumns}>
-              {(column) => (
-                <TableColumn key={column.key}>{column.label}</TableColumn>
-              )}
-            </TableHeader>
-            <TableBody items={rdSchemes}>
-              {(item) => (
-                <TableRow key={item.schemeCode}>
-                  {(columnKey) => (
-                    <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
+        {renderTable("SA", saColumns, saSchemes)}
+        {renderTable("FD", fdColumns, fdSchemes)}
+        {renderTable("RD", rdColumns, rdSchemes)}
       </div>
     </div>
   );
