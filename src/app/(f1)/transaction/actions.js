@@ -4,9 +4,13 @@ import connect from "@/db";
 import CustomerAccount from "@/models/customerAccount";
 import Transaction from "@/models/transaction";
 import BankAccount from "@/models/bankAccount";
+import { generateTimestampOrderedStrings } from "@/functions";
 
 connect();
 export async function transactionAction(pState, formData) {
+  const timestamp = generateTimestampOrderedStrings(
+    `TRN-${transactionType.toUpperCase()}-`
+  );
   const rawFormData = Object.fromEntries(formData.entries());
   console.log({ rawFormData });
   let {
@@ -61,6 +65,7 @@ export async function transactionAction(pState, formData) {
           } else {
             const t = await Transaction.create({
               ...rawFormData,
+              transactionNumber: timestamp,
               balance: amount + customerAccount.balance,
               bank_id:
                 rawFormData.paymode == "online"
@@ -87,6 +92,7 @@ export async function transactionAction(pState, formData) {
             const t = await Transaction.create({
               ...rawFormData,
               balance: amount + customerAccount.balance,
+              transactionNumber: timestamp,
               bank_id:
                 rawFormData.paymode == "online"
                   ? (

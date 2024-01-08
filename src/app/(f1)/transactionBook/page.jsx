@@ -212,7 +212,11 @@ export default function CashbookPage() {
           {(item) => (
             <TableRow key={item.transactionNumber}>
               {(columnKey) => (
-                <TableCell className="text-sm">
+                <TableCell
+                  className={`text-sm ${
+                    columnKey == "transactionNumber" ? "whitespace-nowrap" : ""
+                  }`}
+                >
                   {columnKey === "transactionDate"
                     ? new Date(item[columnKey]).toLocaleString()
                     : getKeyValue(item, columnKey)}
