@@ -10,6 +10,7 @@ import Membership from "@/models/membership";
 import Counter from "@/models/counter";
 import Transaction from "@/models/transaction";
 import BankAccount from "@/models/bankAccount";
+import { revalidatePath } from "next/cache";
 
 connect();
 export async function addMemberAction(pState, formData) {
@@ -69,14 +70,15 @@ export async function addMemberAction(pState, formData) {
                         bank_id:
                           rawFormData.paymode == "online"
                             ? (
-                                await BankAccount.findOne({
-                                  accountNumber: rawFormData.accountNumber,
-                                })
-                              )._id
+                              await BankAccount.findOne({
+                                accountNumber: rawFormData.accountNumber,
+                              })
+                            )._id
                             : "",
                         particular: "Membership created",
                       }).then(
                         () => {
+                          revalidatePath('/api', 'layout')
                           return {
                             success: true,
                             member: JSON.stringify(member),

@@ -5,6 +5,7 @@ import CustomerAccount from "@/models/customerAccount";
 import Transaction from "@/models/transaction";
 import BankAccount from "@/models/bankAccount";
 import { generateTimestampOrderedStrings } from "@/functions";
+import { revalidatePath } from "next/cache";
 
 connect();
 export async function transactionAction(pState, formData) {
@@ -47,10 +48,10 @@ export async function transactionAction(pState, formData) {
               bank_id:
                 rawFormData.paymode == "online"
                   ? (
-                      await BankAccount.findOne({
-                        accountNumber: rawFormData.accountNumber,
-                      })
-                    )._id
+                    await BankAccount.findOne({
+                      accountNumber: rawFormData.accountNumber,
+                    })
+                  )._id
                   : "",
             });
             const c = await CustomerAccount.findOneAndUpdate(
@@ -61,6 +62,7 @@ export async function transactionAction(pState, formData) {
               },
               { $set: { balance: n } }
             );
+            revalidatePath('/api', 'layout')
             return { success: "Transaction successful" };
           } else {
             const t = await Transaction.create({
@@ -70,10 +72,10 @@ export async function transactionAction(pState, formData) {
               bank_id:
                 rawFormData.paymode == "online"
                   ? (
-                      await BankAccount.findOne({
-                        accountNumber: rawFormData.accountNumber,
-                      })
-                    )._id
+                    await BankAccount.findOne({
+                      accountNumber: rawFormData.accountNumber,
+                    })
+                  )._id
                   : "",
             });
             const c = await CustomerAccount.findOneAndUpdate(
@@ -96,10 +98,10 @@ export async function transactionAction(pState, formData) {
               bank_id:
                 rawFormData.paymode == "online"
                   ? (
-                      await BankAccount.findOne({
-                        accountNumber: rawFormData.accountNumber,
-                      })
-                    )._id
+                    await BankAccount.findOne({
+                      accountNumber: rawFormData.accountNumber,
+                    })
+                  )._id
                   : "",
             });
             const c = await CustomerAccount.findOneAndUpdate(

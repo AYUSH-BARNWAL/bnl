@@ -4,6 +4,7 @@ import connect from "@/db";
 import FdScheme from "@/models/fdScheme";
 import RdScheme from "@/models/rdScheme";
 import SaScheme from "@/models/saScheme";
+import { revalidatePath } from "next/cache";
 
 connect();
 
@@ -14,6 +15,7 @@ export async function fdAction(pState, formData) {
 
   return FdScheme.create(rawFormData).then(
     () => {
+      revalidatePath('/api', 'layout')
       return { success: true };
     },
     (error) => {
@@ -29,6 +31,7 @@ export async function rdAction(pState, formData) {
 
   return RdScheme.create(rawFormData).then(
     () => {
+      revalidatePath('/api', 'layout')
       return { success: true };
     },
     (error) => {
@@ -43,6 +46,7 @@ export async function saAction(pState, formData) {
   // TODO: Validate the input fields
   return SaScheme.create(rawFormData).then(
     () => {
+      revalidatePath('/api', 'layout')
       return { success: true };
     },
     (error) => {

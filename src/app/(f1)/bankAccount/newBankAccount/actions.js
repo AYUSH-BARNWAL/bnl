@@ -2,6 +2,7 @@
 
 import connect from "@/db";
 import BankAccount from "@/models/bankAccount";
+import { revalidatePath } from "next/cache";
 connect();
 
 export async function addBankAccountAction(pState, formData) {
@@ -18,6 +19,7 @@ export async function addBankAccountAction(pState, formData) {
       return BankAccount.create(rawFormData).then(
         (bankAccount) => {
           console.log({ bankAccount });
+          revalidatePath('/api', 'layout')
           return { success: true };
         },
         (err) => {

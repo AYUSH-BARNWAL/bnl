@@ -1,5 +1,5 @@
 "use server";
-
+import { revalidatePath } from "next/cache";
 import connect from "@/db";
 import CustomerAccount from "@/models/customerAccount";
 import Counter from "@/models/counter";
@@ -95,14 +95,15 @@ export async function newCustomerAccountAction(pState, formData) {
             bank_id:
               rawFormData.paymode == "online"
                 ? (
-                    await BankAccount.findOne({
-                      accountNumber: rawFormData.accountNumber,
-                    })
-                  )._id
+                  await BankAccount.findOne({
+                    accountNumber: rawFormData.accountNumber,
+                  })
+                )._id
                 : "",
             particular: "New customer account created",
           }).then(
             () => {
+              revalidatePath('/api', 'layout')
               return { success: true };
             },
             (error) => {

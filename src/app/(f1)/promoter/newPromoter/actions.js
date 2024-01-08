@@ -7,6 +7,7 @@ import PromoterShare from "@/models/promoterShare";
 import Transaction from "@/models/transaction";
 import { generateTimestampOrderedStrings } from "@/functions";
 import BankAccount from "@/models/bankAccount";
+import { revalidatePath } from "next/cache";
 connect();
 
 export async function addPromoterAction(pState, formData) {
@@ -20,9 +21,8 @@ export async function addPromoterAction(pState, formData) {
       // return { success: "Promoter created" };
       return ShareTransaction.create({
         promoterId: promoter._id,
-        promoterName: `${promoter.firstName} ${promoter?.middleName}${
-          promoter?.middleName ? " " : ""
-        }${promoter.lastName}`,
+        promoterName: `${promoter.firstName} ${promoter?.middleName}${promoter?.middleName ? " " : ""
+          }${promoter.lastName}`,
         sharesSold: promoter.shareNominalHold,
         shareValue: promoter.shareNominalValue,
         direction: "BTP",
@@ -41,10 +41,11 @@ export async function addPromoterAction(pState, formData) {
                 transactionDate: new Date(parseInt(timestamp.slice(9))),
                 amount: rawFormData.totalShareValue,
                 paymode: "online",
-                bank_id: (await BankAccount.findOne({accountNumber: rawFormData.accountNumber}))._id,
+                bank_id: (await BankAccount.findOne({ accountNumber: rawFormData.accountNumber }))._id,
                 particular: "Promoter added",
               }).then(
                 () => {
+                  revalidatePath('/api', 'layout');
                   return { success: true };
                 },
                 (error) => {
