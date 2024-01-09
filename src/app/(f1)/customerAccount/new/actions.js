@@ -103,7 +103,7 @@ export async function newCustomerAccountAction(pState, formData) {
             particular: "New customer account created",
           }).then(
             () => {
-              revalidatePath('/api', 'layout')
+              revalidatePath('/api/getCustomerAccounts')
               return { success: true };
             },
             (error) => {

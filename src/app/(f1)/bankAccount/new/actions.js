@@ -19,7 +19,7 @@ export async function addBankAccountAction(pState, formData) {
       return BankAccount.create(rawFormData).then(
         (bankAccount) => {
           console.log({ bankAccount });
-          revalidatePath('/api', 'layout')
+          revalidatePath("/api/getBankAccounts");
           return { success: true };
         },
         (err) => {

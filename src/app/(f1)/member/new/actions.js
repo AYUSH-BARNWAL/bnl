@@ -67,18 +67,26 @@ export async function addMemberAction(pState, formData) {
                         amount: rawFormData.total,
                         membershipNumber,
                         paymode: rawFormData.paymode,
+                        // bank_id:
+                        //   rawFormData.paymode == "online"
+                        //     ? (
+                        //        BankAccount.findOne({
+                        //         accountNumber: rawFormData.accountNumber,
+                        //       }).then((ba)=>ba._id)
+                        //     )
+                        //     : "",
                         bank_id:
                           rawFormData.paymode == "online"
-                            ? (
-                              await BankAccount.findOne({
+                            ? await BankAccount.findOne({
                                 accountNumber: rawFormData.accountNumber,
-                              })
-                            )._id
+                              }).then((ba) => ba._id)
                             : "",
                         particular: "Membership created",
                       }).then(
                         () => {
-                          revalidatePath('/api', 'layout')
+                          revalidatePath("/api/getMemberAccounts");
+                          revalidatePath("/api/getPromoterShares");
+                          revalidatePath("/api/getTransactions");
                           return {
                             success: true,
                             member: JSON.stringify(member),

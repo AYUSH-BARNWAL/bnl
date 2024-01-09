@@ -62,7 +62,7 @@ export async function transactionAction(pState, formData) {
               },
               { $set: { balance: n } }
             );
-            revalidatePath('/api', 'layout')
+              revalidatePath('/api/getTransactions')
             return { success: "Transaction successful" };
           } else {
             const t = await Transaction.create({
@@ -86,6 +86,7 @@ export async function transactionAction(pState, formData) {
               },
               { $set: { balance: amount + customerAccount.balance } }
             );
+            revalidatePath('/api/getTransactions')
             return { success: "Transaction successful" };
           }
 

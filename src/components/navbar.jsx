@@ -54,12 +54,12 @@ export default function Nav() {
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection>
-                  <DropdownItem as={Link} href="/member/availableMembers">
+                  <DropdownItem as={Link} href="/member/all">
                     Available Members
                   </DropdownItem>
                   {/* </DropdownSection>
                 <DropdownSection> */}
-                  <DropdownItem as={Link} href="/member/newMember">
+                  <DropdownItem as={Link} href="/member/new">
                     New Member
                   </DropdownItem>
                 </DropdownSection>
@@ -76,12 +76,12 @@ export default function Nav() {
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection>
-                  <DropdownItem as={Link} href="/promoter/availablePromoters">
+                  <DropdownItem as={Link} href="/promoter/all">
                     Available Promoters
                   </DropdownItem>
                   {/* </DropdownSection>
                 <DropdownSection> */}
-                  <DropdownItem as={Link} href="/promoter/newPromoter">
+                  <DropdownItem as={Link} href="/promoter/new">
                     New Promoter
                   </DropdownItem>
                 </DropdownSection>
@@ -105,13 +105,13 @@ export default function Nav() {
                 <DropdownSection>
                   <DropdownItem
                     as={Link}
-                    href="/bankAccount/availableBankAccounts"
+                    href="/bankAccount/all"
                   >
                     Available Bank Accounts
                   </DropdownItem>
                   {/* </DropdownSection>
                 <DropdownSection> */}
-                  <DropdownItem as={Link} href="/bankAccount/newBankAccount">
+                  <DropdownItem as={Link} href="/bankAccount/new">
                     New Bank Account
                   </DropdownItem>
                 </DropdownSection>
@@ -133,7 +133,7 @@ export default function Nav() {
                 <DropdownSection>
                   <DropdownItem
                     as={Link}
-                    href="/customerAccount/availableCustomerAccount"
+                    href="/customerAccount/all"
                   >
                     Available Customer Accounts
                   </DropdownItem>
@@ -141,7 +141,7 @@ export default function Nav() {
                 <DropdownSection> */}
                   <DropdownItem
                     as={Link}
-                    href="/customerAccount/newCustomerAccount"
+                    href="/customerAccount/new"
                   >
                     New Customer Account
                   </DropdownItem>
@@ -163,7 +163,7 @@ export default function Nav() {
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection>
-                  <DropdownItem as={Link} href="/schemes/availableSchemes">
+                  <DropdownItem as={Link} href="/schemes/all">
                     All Schemes
                   </DropdownItem>
                   <DropdownItem as={Link} href="/schemes/fdscheme">
@@ -188,8 +188,8 @@ export default function Nav() {
             <DropdownMenu>
               <DropdownSection>
                 <DropdownItem>
-                  <p>{user.name}</p>
-                  <p>{user.email}</p>
+                  <p>{user?.name}</p>
+                  <p>{user?.email}</p>
                 </DropdownItem>
               </DropdownSection>
               <DropdownSection>

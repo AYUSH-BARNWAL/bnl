@@ -15,7 +15,7 @@ export async function fdAction(pState, formData) {
 
   return FdScheme.create(rawFormData).then(
     () => {
-      revalidatePath('/api', 'layout')
+      revalidatePath("/api/getFdSchemes");
       return { success: true };
     },
     (error) => {
@@ -31,7 +31,7 @@ export async function rdAction(pState, formData) {
 
   return RdScheme.create(rawFormData).then(
     () => {
-      revalidatePath('/api', 'layout')
+      revalidatePath("/api/scheme/getRdSchemes");
       return { success: true };
     },
     (error) => {
@@ -46,7 +46,7 @@ export async function saAction(pState, formData) {
   // TODO: Validate the input fields
   return SaScheme.create(rawFormData).then(
     () => {
-      revalidatePath('/api', 'layout')
+      revalidatePath("/api/getSaSchemes");
       return { success: true };
     },
     (error) => {
